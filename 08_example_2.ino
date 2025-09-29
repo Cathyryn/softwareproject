@@ -37,15 +37,19 @@ void loop() {
 
   distance = USS_measure(PIN_TRIG, PIN_ECHO); // read distance
 
-  if ((distance == 0.0) || (distance > _DIST_MAX)) {
-      distance = _DIST_MAX + 10.0;    // Set Higher Value
-      digitalWrite(PIN_LED, 1);       // LED OFF
-  } else if (distance < _DIST_MIN) {
-      distance = _DIST_MIN - 10.0;    // Set Lower Value
-      digitalWrite(PIN_LED, 1);       // LED OFF
-  } else {    // In desired Range
-      digitalWrite(PIN_LED, 0);       // LED ON      
+  int ledValue;
+
+  if (distance >= _DIST_MIN && distance <= 200.0) {
+    ledValue = map(distance, _DIST_MIN, 200.0, 255, 0);
   }
+  else if (distance > 200.0 && distance <= _DIST_MAX) {
+    ledValue = map(distance, 200.0, _DIST_MAX, 0, 255); 
+  }
+  else {
+    ledValue = 255;
+  }
+
+  analogWrite(PIN_LED, ledValue); 
 
   // output the distance to the serial port
   Serial.print("Min:");        Serial.print(_DIST_MIN);
